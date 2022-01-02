@@ -4,8 +4,8 @@ using namespace sf;
 using namespace std;
 struct Flappy {
     Sprite sprite;
-    float velocity = -0.5f;
-    float gravity = 0.2f;
+    float velocity = -0.3f;
+    float gravity = 0.15f;
     int frame = 0;
 } flappy;
 
@@ -33,10 +33,13 @@ void moveLand() {
 int main() {
     RenderWindow window(VideoMode(350, 665), "Flapy Bird");
 
-    Texture bgTexture, landTexture, birdTexture[3];
+    Texture bgTexture, landTexture, flappyTexture[3];
 
     bgTexture.loadFromFile("images/background.png");
     landTexture.loadFromFile("images/land.png");
+    flappyTexture[0].loadFromFile("images/flappy1.png");
+    flappyTexture[1].loadFromFile("images/flappy2.png");
+    flappyTexture[2].loadFromFile("images/flappy3.png");
 
 	  Game.Background.setTexture(bgTexture, true);
 	  Game.Background.setScale(1.25, 1.15);
@@ -50,21 +53,39 @@ int main() {
     }
 
     while (window.isOpen()) {
-        sf::Event event;
+        Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == Event::Closed)
                 window.close();
         }
+        float fx = flappy.sprite.getPosition().x;
+        float fy = flappy.sprite.getPosition().y;
+        if (fx == 0) flappy.sprite.setPosition(50, 350);
+
+        flappy.sprite.move(0.0f, flappy.gravity);
+
+        if(Keyboard::isKeyPressed(Keyboard::Space)) {
+          flappy.sprite.move(0.0f, flappy.velocity);
+        }
+        if(Game.frames % 10 == 0 ) flappy.frame += 1;
+
+        if (Game.frames == 3) flappy.frame = 0;
+
+        flappy.sprite.setTexture(flappyTexture[flappy.frame], true);
 
         window.clear();
 
         window.draw(Game.Background);
         window.draw(Game.Land[0]);
         window.draw(Game.Land[1]);
+        window.draw(flappy.sprite);
 
         moveLand();
         window.display();
+
+        Game.frames++;
+        if(Game.frames== 60) Game.frames = 0;
     }
 
     return 0;
