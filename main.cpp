@@ -56,14 +56,27 @@ int main() {
         Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == Event::Closed)
+            if (event.type == Event::Closed) {
                 window.close();
+            }
+
+            if (event.type == Event::KeyReleased) {
+                if (event.key.code == Keyboard::Space) {
+                    flappy.sprite.move(0.0f, flappy.gravity);
+                }
+            }
         }
+
         float fx = flappy.sprite.getPosition().x;
         float fy = flappy.sprite.getPosition().y;
         if (fx == 0) flappy.sprite.setPosition(50, 350);
 
+        if(fy > 665) {
+          flappy.velocity = 0;
+          flappy.velocity = 0;
+        }
         flappy.sprite.move(0.0f, flappy.gravity);
+        cout << fy << endl;
 
         if(Keyboard::isKeyPressed(Keyboard::Space)) {
           flappy.sprite.move(0.0f, flappy.velocity);
